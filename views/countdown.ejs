@@ -39,6 +39,27 @@
 
 
 <script>
+    function reset() {
+        // Stopping the timer 
+        clearInterval(timeInterval);
+
+        // Setting Time Paragraph/Timer to empty 
+        $("#time").empty();
+        $("#time").append("0<span>D</span> : 00<span>HH</span> : 00<span>MM</span> : 00<span>SS</span>");
+
+        // Setting running and resume false 
+        running = false;
+        resume = false;
+
+        // Changing button text to Start 
+        var x = $("#start").text("Start");
+
+        // Enabling input and empty it 
+        $("#input").val('');
+        $("#input").prop('disabled', false);
+    }
+
+
     // Using mask input field 
 
     $('input[name="time"]').mask('00:00:00');
@@ -113,26 +134,33 @@
                 // Starting Timer with that repeat itself everysecond
                 timeInterval = setInterval(function () {
 
-                    // Reducing totalTime by 1 second 
-                    var timer = totalTime--;
+                    if (totalTime == 0 || remainingTime == 0) {
+                        document.getElementById("myAudio").play();
+                        reset();
+                    } else {
 
-                    // if timer has value in day then converting SECONDS into DAYS 
-                    var day = Math.floor(timer / 86400);
+                        // Reducing totalTime by 1 second 
+                        var timer = totalTime--;
 
-                    // Converting SECONDS into HH:MM:SS format 
-                    var hourTimerTime = new Date(timer * 1000).toISOString().substr(11, 2);
-                    var minTimerTime = new Date(timer * 1000).toISOString().substr(14, 2);
-                    var secTimerTime = new Date(timer * 1000).toISOString().substr(17, 2);
+                        // if timer has value in day then converting SECONDS into DAYS 
+                        var day = Math.floor(timer / 86400);
 
-                    // Empty previous value of Paragraph of ID = #time 
-                    $("#time").empty();
+                        // Converting SECONDS into HH:MM:SS format 
+                        var hourTimerTime = new Date(timer * 1000).toISOString().substr(11, 2);
+                        var minTimerTime = new Date(timer * 1000).toISOString().substr(14, 2);
+                        var secTimerTime = new Date(timer * 1000).toISOString().substr(17, 2);
 
-                    // Appending new value in Paragraph of ID = #time
-                    $("#time").append(day + "<span>D</span> : " + hourTimerTime + "<span>HH</span> : " +
-                        minTimerTime + "<span>MM</span> : " + secTimerTime + "<span>SS</span>");
+                        // Empty previous value of Paragraph of ID = #time 
+                        $("#time").empty();
 
-                    // Storing remaining Seconds/Time for Pause/Resume functionality
-                    remainingTime = timer;
+                        // Appending new value in Paragraph of ID = #time
+                        $("#time").append(day + "<span>D</span> : " + hourTimerTime +
+                            "<span>HH</span> : " +
+                            minTimerTime + "<span>MM</span> : " + secTimerTime + "<span>SS</span>");
+
+                        // Storing remaining Seconds/Time for Pause/Resume functionality
+                        remainingTime = timer;
+                    }
 
                     // Entering time interval of 1000 milisecond so it repeat on everysecond
                 }, 1000);
@@ -176,23 +204,6 @@
 
     // Clicking of Reset button 
     $("#reset").click(function () {
-
-        // Stopping the timer 
-        clearInterval(timeInterval);
-
-        // Setting Time Paragraph/Timer to empty 
-        $("#time").empty();
-        $("#time").append("0<span>D</span> : 00<span>HH</span> : 00<span>MM</span> : 00<span>SS</span>");
-
-        // Setting running and resume false 
-        running = false;
-        resume = false;
-
-        // Changing button text to Start 
-        var x = $("#start").text("Start");
-
-        // Enabling input and empty it 
-        $("#input").val('');
-        $("#input").prop('disabled', false);
+        reset();
     });
 </script>
