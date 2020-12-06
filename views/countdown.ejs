@@ -1,0 +1,198 @@
+<%- include("header")%>
+<div class="navbar navbar-custom">
+    <h2>Countdown Timer</h2>
+</div>
+
+<div class="main-box">
+
+    <div class="container input-container">
+        <!-- Displaying remaining time -->
+        <h1 id="time">0<span>D</span> : 00<span>HH</span> : 00<span>MM</span> : 00<span>SS</span></h1>
+    </div>
+
+
+    <div class="container input-container">
+        <!-- Input field for user -->
+        <input type="text" class="form-control" name="time" id="input" placeholder="HH:MM:SS" />
+    </div>
+
+
+    <div class="btn-container">
+        <button class="btn" id="start">Start</button>
+        <button class="btn" id="reset">Reset</button>
+    </div>
+
+</div>
+
+<div class="footer">
+    <h6>Made with ❤ by tanixq.</h6>
+</div>
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"
+    integrity="sha256-yE5LLp5HSQ/z+hJeCqkz9hdjNkk1jaiGG0tDCraumnA=" crossorigin="anonymous">
+</script>
+
+
+<script>
+    // Using mask input field 
+
+    $('input[name="time"]').mask('00:00:00');
+
+    // Running Variable for finding out timer is running or not 
+    var running = false;
+
+    // Resume variable to find out if timer is in pause/resume state 
+    var resume = false;
+
+    // To check if timer is paused then, to start timer from previos stopped time.
+    // or 
+    // to start timer for remaining time after pause 
+    if (resume) {
+        var remainingTime;
+    }
+
+    // when start button is clicked
+    $("#start").click(function () {
+
+        // Taking input from user as string 
+        var timeString = $("#input").val();
+
+        // spliting input into HH MM SS form. In form of array called 'time'
+        var time = timeString.split(":");
+
+        // To check if user input correct value of time of timer 
+        // if it contains HH:MM:SS only then procees further
+        if (time.length == 3) {
+
+            // To check if the timer is running or not 
+            // Execute when timer is NOT running 
+            if (!running) {
+
+                // Setting value of running true. Now timer is in running state 
+                running = true;
+
+                // Disabling input from user when timer is running
+                $("#input").prop('disabled', true);
+
+                // To check if timer is paused 
+                if (resume) {
+
+                    // If timer is paused then the totalTime (in seconds) is equal 
+                    // to previous remaining Time
+                    totalTime = remainingTime;
+
+                    // if timer is not resumed started first time then ELSE part is executed
+                } else {
+                    // converting time above time string array into individual int 
+                    var hour = parseInt(time[0]);
+                    var min = parseInt(time[1]);
+                    var sec = parseInt(time[2]);
+
+                    // Total time is in second i.e converting HH:MM:SS into Seconds
+                    var totalTime = (hour * 3600) + (min * 60) + sec;
+                }
+
+                // Check the state of button 
+                var x = $(this).text();
+
+                // If it is "START" button then convert it into "PAUSE"
+                if (x == "Start") {
+                    $(this).text("Pause");
+                }
+
+                // If it is "RESUME" button then convert it into "PAUSE"
+                if (x == "Resume") {
+                    $(this).text("Pause");
+                }
+
+                // Starting Timer with that repeat itself everysecond
+                timeInterval = setInterval(function () {
+
+                    // Reducing totalTime by 1 second 
+                    var timer = totalTime--;
+
+                    // if timer has value in day then converting SECONDS into DAYS 
+                    var day = Math.floor(timer / 86400);
+
+                    // Converting SECONDS into HH:MM:SS format 
+                    var hourTimerTime = new Date(timer * 1000).toISOString().substr(11, 2);
+                    var minTimerTime = new Date(timer * 1000).toISOString().substr(14, 2);
+                    var secTimerTime = new Date(timer * 1000).toISOString().substr(17, 2);
+
+                    // Empty previous value of Paragraph of ID = #time 
+                    $("#time").empty();
+
+                    // Appending new value in Paragraph of ID = #time
+                    $("#time").append(day + "<span>D</span> : " + hourTimerTime + "<span>HH</span> : " +
+                        minTimerTime + "<span>MM</span> : " + secTimerTime + "<span>SS</span>");
+
+                    // Storing remaining Seconds/Time for Pause/Resume functionality
+                    remainingTime = timer;
+
+                    // Entering time interval of 1000 milisecond so it repeat on everysecond
+                }, 1000);
+
+
+                //   if timer is not in running state then ELSE part is executed
+            } else {
+
+                // Check the state of button 
+                var x = $(this).text();
+
+                // If it is "START" button then convert it into "PAUSE"
+                // Else convert it into 'RESUME'  
+                if (x == "Start") {
+                    $(this).text("Pause");
+                } else {
+                    $(this).text("Resume");
+                }
+
+                // Setting running false and resume true 
+                running = false;
+                resume = true;
+
+                // Clearing interval
+                // or 
+                // Stop the timer 
+                clearInterval(timeInterval);
+
+            }
+
+            // if user entered wrong input 
+            // or
+            // Not entered in format of HH:MM:SS then ELSE part is executed
+        } else {
+
+            // skipping the function 
+            return;
+        }
+    });
+
+
+    // Clicking of Reset button 
+    $("#reset").click(function () {
+
+        // Stopping the timer 
+        clearInterval(timeInterval);
+
+        // Setting Time Paragraph/Timer to empty 
+        $("#time").empty();
+        $("#time").append("0<span>D</span> : 00<span>HH</span> : 00<span>MM</span> : 00<span>SS</span>");
+
+        // Setting running and resume false 
+        running = false;
+        resume = false;
+
+        // Changing button text to Start 
+        var x = $("#start").text("Start");
+
+        // Enabling input and empty it 
+        $("#input").val('');
+        $("#input").prop('disabled', false);
+    });
+</script>
