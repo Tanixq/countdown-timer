@@ -12,6 +12,9 @@
     "countdown",
     "timer"
   ],
+  "engines": {
+    "node": "14.15.1"
+  },
   "author": "Tanishq Patel",
   "license": "ISC",
   "dependencies": {
