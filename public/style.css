@@ -87,6 +87,14 @@ span {
     margin-bottom: 20px;
 }
 
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .footer{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+  }
+
 @media screen and (max-width: 470px) {
     h2 {
         font-size: 7vw;
