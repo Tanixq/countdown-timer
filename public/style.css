@@ -107,11 +107,21 @@ span {
     h6{
         font-size: 15px;
     }
+
+    .footer{
+        text-align: center;
+        margin-bottom: 20px;
+    }
 }
 
 @media screen and (max-width: 300px) {
     .input-container{
         padding: 0;
         text-align: center;
+    }
+
+    .footer{
+        text-align: center;
+        margin-bottom: 20px;
     }
 }
